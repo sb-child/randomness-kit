@@ -1,0 +1,25 @@
+[build-system]
+requires = ["maturin>=1.14,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "randomness-kit"
+description = "some tools about randomness calculation"
+readme = "README.md"
+requires-python = ">=3.14"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+dependencies = [
+    "maturin>=1.14.1",
+]
+authors = [{"name" = "sbchild", "email" = "sbchild0@gmail.com" }]
+license = { file = "LICENSE" }
+
+[tool.maturin]
+features = ["pyo3/extension-module", "pyo3/experimental-inspect"]
+generate-ci.github."all" = false
+generate-ci.github."manylinux" = true
