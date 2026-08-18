@@ -8,22 +8,34 @@ todo
 
 ## Develop
 
-Install maturin.
+Install maturin:
 
 ```bash
 uv tool install maturin
 ```
 
-Build debug version, and install locally.
+Build debug package, and install in local venv:
 
 ```bash
 maturin develop --uv
 uv run python3
 ```
 
-Build release version.
+Build release package:
 
 ```bash
 uv build
 ls dist  # whl file generates here
+```
+
+Commit a release:
+
+```bash
+uv run release.py
+```
+
+Generate CI config:
+
+```bash
+maturin generate-ci github > .github/workflows/CI.yml
 ```
