@@ -3,6 +3,8 @@ import maturin
 from pathlib import Path
 from typing import Any, Mapping
 
+from dev import generate_init_file, generate_stub
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 
@@ -29,8 +31,8 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 
 def build_sdist(sdist_directory, config_settings=None):
     # generate stubs here
-    command = ["maturin", "generate-stubs", "-o", SCRIPT_DIR / "randomness_kit"]
-    subprocess.run(command, env=maturin._get_env(), cwd=SCRIPT_DIR, check=True)
+    generate_stub(maturin._get_env())
+    generate_init_file(maturin._get_env())
     return maturin.build_sdist(
         sdist_directory, add_settings(config_settings, release=True)
     )

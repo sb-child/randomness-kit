@@ -16,6 +16,8 @@ mod randomness_kit {
     use super::min_entropy_algo;
 
     /// test function
+    ///
+    /// return x * 2
     #[pyfunction]
     fn ping(x: usize) -> usize {
         x * 2

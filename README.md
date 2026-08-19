@@ -8,10 +8,11 @@ todo
 
 ## Develop
 
-Install maturin:
+Install maturin and ruff:
 
 ```bash
 uv tool install maturin
+uv tool install ruff
 ```
 
 Build debug package, and install in local venv:
@@ -32,6 +33,7 @@ Commit a release:
 
 ```bash
 # Bump version at Cargo.toml
+uv run dev.py
 uv run release.py
 ```
 

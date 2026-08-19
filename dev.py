@@ -7,10 +7,37 @@ import sys
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 
-def generate_stub():
+def generate_stub(env: None | dict = None):
     command = ["maturin", "generate-stubs", "-o", SCRIPT_DIR / "randomness_kit"]
     try:
-        subprocess.run(command, cwd=SCRIPT_DIR, check=True)
+        subprocess.run(command, cwd=SCRIPT_DIR, check=True, env=env)
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except FileNotFoundError:
+        print(
+            "Error: maturin is not installed.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+def generate_init_file(env: None | dict = None):
+    command = ["uv", "run", "gen-init.py"]
+    try:
+        subprocess.run(command, cwd=SCRIPT_DIR, check=True, env=env)
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except FileNotFoundError:
+        print(
+            "Error: maturin is not installed.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+def develop(cmd):
+    try:
+        subprocess.run(cmd, cwd=SCRIPT_DIR, check=True)
     except KeyboardInterrupt:
         sys.exit(130)
     except FileNotFoundError:
@@ -42,19 +69,9 @@ def main():
         cmd.append("--release")
     cmd.extend(extra_args)
     print("Generating Stubs...\n")
+    develop(cmd)
     generate_stub()
-    print(f"Execute: {' '.join(cmd)}\n")
-    try:
-        result = subprocess.run(cmd, cwd=SCRIPT_DIR)
-        sys.exit(result.returncode)
-    except KeyboardInterrupt:
-        sys.exit(130)
-    except FileNotFoundError:
-        print(
-            "Error: maturin is not installed.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    generate_init_file()
 
 
 if __name__ == "__main__":

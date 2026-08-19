@@ -2,7 +2,7 @@
 name = "randomness-kit"
 description = "some tools about randomness calculation"
 repository = "https://github.com/sb-child/randomness-kit"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 license = "MIT"
 authors = ["sbchild <sbchild0@gmail.com>"]

@@ -7,6 +7,8 @@ from _typeshed import Incomplete
 def ping(x: int) -> int:
     """
     test function
+    
+    return x * 2
     """
 
 def version() -> str:
