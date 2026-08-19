@@ -17,7 +17,7 @@ uv tool install maturin
 Build debug package, and install in local venv:
 
 ```bash
-maturin develop --uv
+uv run dev.py
 uv run python3
 ```
 
@@ -31,11 +31,12 @@ ls dist  # whl file generates here
 Commit a release:
 
 ```bash
+# Bump version at Cargo.toml
 uv run release.py
 ```
 
 Generate CI config:
 
 ```bash
-maturin generate-ci github > .github/workflows/CI.yml
+uv run gen-ci.py
 ```

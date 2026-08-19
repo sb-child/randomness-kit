@@ -46,7 +46,8 @@ def main():
     current_branch = run_git("branch", "--show-current", capture=True)
     if not current_branch:
         sys.exit("Error: Not on a valid branch (detached HEAD).")
-    print("\nAdding files...")
+    print()
+    print("Adding files...")
     run_git("add", ".")
     print("Commiting...")
     run_git("commit", "-am", f"Release {tag}")

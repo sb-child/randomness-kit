@@ -1,6 +1,7 @@
 [build-system]
 requires = ["maturin>=1.14,<2.0"]
-build-backend = "maturin"
+build-backend = "builder_cb"
+backend-path = ["."]
 
 [project]
 name = "randomness-kit"
@@ -19,9 +20,11 @@ license = { file = "LICENSE" }
 
 [tool.maturin]
 features = ["pyo3/extension-module", "pyo3/experimental-inspect"]
+include = ["py.typed"]
 
 [tool.maturin.generate-ci.github]
 # Finally found: https://github.com/PyO3/maturin/blob/main/src/pyproject_toml.rs#L487
+args = "--generate-stubs"
 linux = { "targets" = ["x86_64"] }
 musllinux = { "targets" = ["x86_64"] }
 # windows = {}
