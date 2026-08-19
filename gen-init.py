@@ -36,12 +36,13 @@ def generate_init_file():
     assert randomness_kit.ping(666) == 666 * 2, "Python module is out of date."
     mod_all = randomness_kit._randomness_kit.__all__
     mod_all = mod_all if type(mod_all) is list else []
+    mod_all_str = "*" if len(mod_all) == 0 else ", ".join(mod_all)
     mod_doc = str(randomness_kit.__doc__)
     save_path = SCRIPT_DIR / "randomness_kit"
     save_path.mkdir(parents=True, exist_ok=True)
     (save_path / "py.typed").touch(exist_ok=True)
     init_file = save_path / "__init__.py"
-    template = f"""from ._randomness_kit import *  # pyright: ignore[reportMissingImports] # noqa: F403
+    template = f"""from ._randomness_kit import {mod_all_str}  # pyright: ignore[reportMissingImports] # noqa: F403
 __all__ = {repr(mod_all)}  # pyright: ignore[reportUnsupportedDunderAll]  # noqa: F405
 __doc__ = {repr(mod_doc)}
     """

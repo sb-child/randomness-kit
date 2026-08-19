@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import subprocess
 import sys
 import tomllib
@@ -38,6 +39,19 @@ def get_package_version() -> str:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Release tool")
+    parser.add_argument(
+        "-m",
+        "--message",
+        type=str,
+        metavar="MSG",
+        required=False,
+        default="",
+        help="add some description in the commit message",
+    )
+    args = parser.parse_args()
+    msg = str(args.message)
+    msg = "" if len(msg) == 0 else f": {msg}"
     version = get_package_version()
     tag = f"v{version}"
     print(f"Current Version: {version}")
@@ -50,9 +64,9 @@ def main():
     print("Adding files...")
     run_git("add", ".")
     print("Commiting...")
-    run_git("commit", "--allow-empty", "-am", f"Release {tag}")
+    run_git("commit", "--allow-empty", "-am", f"Release {tag}{msg}")
     print("Tagging...")
-    run_git("tag", "-a", tag, "-m", f"Version {version}")
+    run_git("tag", "-a", tag, "-m", f"Version {version}{msg}")
     print("Pushing branch...")
     run_git("push", "origin", current_branch)
     print("Pushing tag...")
