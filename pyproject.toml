@@ -24,9 +24,10 @@ include = ["py.typed"]
 
 [tool.maturin.generate-ci.github]
 # Finally found: https://github.com/PyO3/maturin/blob/main/src/pyproject_toml.rs#L487
-args = "--generate-stubs"
-linux = { "targets" = ["x86_64"] }
-musllinux = { "targets" = ["x86_64"] }
+# but before_script_linux doesn't work
+linux = { target = [{ arch = "x86_64", before_script_linux = "xxx" }] }
+musllinux = { target = [{ arch = "x86_64", before_script_linux = "xxx" }] }
+# args = "--generate-stubs" # stubs already exist 
 # windows = {}
 # macos = {}
 # emscripten = {}

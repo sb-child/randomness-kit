@@ -19,6 +19,7 @@ def gen_ci() -> str:
     except FileNotFoundError:
         sys.exit("Error: maturin is not installed.")
     except subprocess.CalledProcessError as e:
+        print(e.stderr)
         sys.exit(f"Generate CI failed: {e}")
 
 
