@@ -50,7 +50,7 @@ def main():
     print("Adding files...")
     run_git("add", ".")
     print("Commiting...")
-    run_git("commit", "-am", f"Release {tag}")
+    run_git("commit", "--allow-empty", "-am", f"Release {tag}")
     print("Tagging...")
     run_git("tag", "-a", tag, "-m", f"Version {version}")
     print("Pushing branch...")
