@@ -19,6 +19,7 @@ authors = [{ "name" = "sbchild", "email" = "sbchild0@gmail.com" }]
 license = { file = "LICENSE" }
 
 [tool.maturin]
+module-name = "randomness_kit._randomness_kit"
 features = ["pyo3/extension-module", "pyo3/experimental-inspect"]
 include = ["py.typed"]
 

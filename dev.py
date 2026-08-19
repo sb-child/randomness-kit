@@ -7,6 +7,20 @@ import sys
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 
+def generate_stub():
+    command = ["maturin", "generate-stubs", "-o", SCRIPT_DIR / "randomness_kit"]
+    try:
+        subprocess.run(command, cwd=SCRIPT_DIR, check=True)
+    except KeyboardInterrupt:
+        sys.exit(130)
+    except FileNotFoundError:
+        print(
+            "Error: maturin is not installed.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(description="`maturin develop` 的快捷封装脚本")
     group = parser.add_mutually_exclusive_group()
@@ -27,9 +41,9 @@ def main():
     if args.release:
         cmd.append("--release")
     cmd.extend(extra_args)
-
+    print("Generating Stubs...\n")
+    generate_stub()
     print(f"Execute: {' '.join(cmd)}\n")
-
     try:
         result = subprocess.run(cmd, cwd=SCRIPT_DIR)
         sys.exit(result.returncode)

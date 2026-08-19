@@ -2,13 +2,13 @@
 name = "randomness-kit"
 description = "some tools about randomness calculation"
 repository = "https://github.com/sb-child/randomness-kit"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 license = "MIT"
 authors = ["sbchild <sbchild0@gmail.com>"]
 
 [lib]
-name = "randomness_kit"
+name = "_randomness_kit"
 crate-type = ["cdylib"]
 
 [dependencies]

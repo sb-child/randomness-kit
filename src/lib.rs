@@ -4,7 +4,8 @@ mod pytypes;
 mod shannon_entropy;
 mod util;
 
-#[pymodule(name = "randomness_kit")]
+/// `randomness_kit` root module
+#[pymodule(name = "_randomness_kit")]
 mod randomness_kit {
     use pyo3::prelude::*;
 
@@ -14,9 +15,17 @@ mod randomness_kit {
     #[pymodule_export]
     use super::min_entropy_algo;
 
+    /// test function
     #[pyfunction]
     fn ping(x: usize) -> usize {
         x * 2
+    }
+
+    /// package version
+    #[pyfunction]
+    fn version() -> PyResult<String> {
+        let v = env!("CARGO_PKG_VERSION");
+        Ok(v.to_owned())
     }
 
     #[pymodule_init]
