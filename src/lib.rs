@@ -34,8 +34,25 @@ mod randomness_kit {
         Ok(v.to_owned())
     }
 
+    /// 获取本模块的构建模式
+    ///
+    /// 返回值: `"debug" | "release"`
+    #[pyfunction]
+    fn profile() -> PyResult<String> {
+        if cfg!(debug_assertions) {
+            Ok("debug".to_owned())
+        } else {
+            Ok("release".to_owned())
+        }
+    }
+
     #[pymodule_init]
     fn init(_m: &Bound<'_, PyModule>) -> PyResult<()> {
+        if cfg!(debug_assertions) {
+            eprintln!(
+                "[WARNING] You are running a DEBUG build of randomness_kit. Performance will lower."
+            );
+        }
         // m.add("double2", m.getattr("double")?)
         // println!("randomness_kit is imported.");
         Ok(())

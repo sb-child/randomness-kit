@@ -11,6 +11,13 @@ def ping(x: int) -> int:
     return x * 2
     """
 
+def profile() -> str:
+    """
+    获取本模块的构建模式
+    
+    返回值: `"debug" | "release"`
+    """
+
 def version() -> str:
     """
     package version

@@ -3,7 +3,7 @@ use rayon::iter::{IntoParallelIterator as _, ParallelIterator as _};
 use rayon::slice::ParallelSliceMut as _;
 
 use crate::strings::SmartString;
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::hash::Hash;
 
 /// 代表片段在原数据中的半开区间位置 `[start, end)`。
@@ -20,12 +20,6 @@ impl FragmentInterval {
     #[inline]
     pub fn new(start: usize, end: usize) -> Self {
         Self { start, end }
-    }
-
-    /// 判断当前区间与另一个区间是否存在重叠。
-    #[inline]
-    pub fn overlaps_with(&self, other: &Self) -> bool {
-        !(self.end <= other.start || self.start >= other.end)
     }
 }
 
@@ -92,23 +86,24 @@ where
     let mut candidates: Vec<Candidate> = (1..=max_len)
         .into_par_iter()
         .flat_map(|length| {
-            let mut local_candidates = Vec::new();
-            let mut local_visited: HashSet<&[T]> = HashSet::new();
+            let mut slice_positions: HashMap<&[T], Vec<usize>> = HashMap::new();
             for i in 0..=(n - length) {
-                let sub = &data[i..i + length];
-                if local_visited.contains(sub) {
+                slice_positions
+                    .entry(&data[i..i + length])
+                    .or_default()
+                    .push(i);
+            }
+            let mut local_candidates = Vec::new();
+            for (_sub, positions) in slice_positions {
+                if positions.len() < times {
                     continue;
                 }
-                local_visited.insert(sub);
-                let mut occurrences = Vec::new();
-                let mut start = 0;
-                while start + length <= n {
-                    if let Some(rel_pos) = data[start..].windows(length).position(|w| w == sub) {
-                        let pos = start + rel_pos;
+                let mut occurrences = Vec::with_capacity(positions.len());
+                let mut last_end = 0;
+                for &pos in &positions {
+                    if pos >= last_end {
                         occurrences.push(FragmentInterval::new(pos, pos + length));
-                        start = pos + length;
-                    } else {
-                        break;
+                        last_end = pos + length;
                     }
                 }
                 if occurrences.len() >= times {
@@ -124,19 +119,12 @@ where
             .then_with(|| b.1.cmp(&a.1))
             .then_with(|| b.2.cmp(&a.2))
     });
-    let mut result = Vec::new();
-    let mut used_global_intervals: Vec<FragmentInterval> = Vec::new();
-    let check_global_overlap =
-        |occ_list: &[FragmentInterval], used_list: &[FragmentInterval]| -> bool {
-            for new_int in occ_list {
-                for used_int in used_list {
-                    if new_int.overlaps_with(used_int) {
-                        return true;
-                    }
-                }
-            }
-            false
-        };
+    let mut result = Vec::with_capacity(count.min(candidates.len()));
+    let mut used_mask = if global_non_overlap {
+        vec![false; n]
+    } else {
+        Vec::new()
+    };
     let mut idx = 0;
     for cand in candidates {
         if idx >= count {
@@ -144,10 +132,15 @@ where
         }
         let occurrences = cand.3;
         if global_non_overlap {
-            if check_global_overlap(&occurrences, &used_global_intervals) {
+            let has_overlap = occurrences
+                .iter()
+                .any(|occ| used_mask[occ.start..occ.end].iter().any(|&used| used));
+            if has_overlap {
                 continue;
             }
-            used_global_intervals.extend(&occurrences);
+            for occ in &occurrences {
+                used_mask[occ.start..occ.end].fill(true);
+            }
         }
         result.push(Fragment {
             id: idx,
